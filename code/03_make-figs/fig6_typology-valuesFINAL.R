@@ -10,8 +10,19 @@ source("code/00_color-palettes.R")
 
 # 1. data -----------------------------------------------------------------
 
-d1 <- 
+d1a <- 
   read_csv("data/tidy_typology-totvalues.csv")
+
+d1b <- 
+  read_csv("data/tidy_multicriteria-values.csv") |> 
+  group_by(cctrt_id, till_id, straw_id) |>  
+  summarise(valuetot = mean(value)) |> 
+  mutate(farmer_type = "Equal weighting")
+
+d1 <- 
+  d1b |> 
+  bind_rows(d1a) |> 
+  mutate(farmer_type = as_factor(farmer_type))
 
 
 # 2. make nice lables cc ------------------------------------------------
@@ -79,7 +90,9 @@ d3 |>
                                           color = "black"),
         strip.text.x = element_text(size = rel(1.3))) 
 
-ggsave("figs/fig7_typology-specific-value.png", height = 7.5, width = 9)
+ggsave("figs/fig7_typology-specific-value.png", width = 7.6, height = 5.02)
+
+
 
 #--trying other formats...
 d3 |>  
